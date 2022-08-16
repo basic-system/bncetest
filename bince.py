@@ -29,8 +29,8 @@ def get_24hr_data():
     """
     https://api.binance.com/api/v3/ticker/24hr returns info about 24 hours trades
     """
-    with open('24hr') as f:
-        return json.loads(f.read())
+    # with open('24hr') as f:
+    #     return json.loads(f.read())
 
     s24hr =  get_data('/api/v3/ticker/24hr')
 
