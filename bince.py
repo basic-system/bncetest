@@ -29,6 +29,7 @@ def get_24hr_data():
     """
     https://api.binance.com/api/v3/ticker/24hr returns info about 24 hours trades
     """
+    # for test with cached result in file 24hr uncomment lines
     # with open('24hr') as f:
     #     return json.loads(f.read())
 
@@ -126,9 +127,11 @@ def price_difference(symbols):
     price_spread_res, price_spread_res_prev = {}, {}
     price_spread_res = price_spread(symbols, price = True)
     print("Sym\tspread\tprice")
+
     # Add prometheus metrics
     g_spread = Gauge('symblol_spread', 'Change in symbols, spread', ['symbol'])
     g_price = Gauge('symblol_price_change', 'Change in symbols, price', ['symbol'])
+
     for i in range(10):
         time.sleep(10)
         price_spread_res_prev = price_spread_res
@@ -146,22 +149,22 @@ def main():
     data = get_24hr_data()
     print("top 5 quote asset BTC symbols by volume")
     top_5_vol = top_5_by_volume(data)
+
     print("=" * 100)
     print("top 5 quote asset USDT symbols by count")
     top_5_count = top_5_by_count(data)
+
     print("=" * 100)
     print("total notional value of the top 200 bids and asks")
-    # bids_asks(top_5_vol.keys())
     print("=" * 100)
     print("price spread")
-    # print(top_5_count)
+
     price_spread_res = price_spread(top_5_count.keys())
     print("Sym\tspread")
     for (k,v) in price_spread_res.items():
         print("%s\t%s" % (k, v["spread"]))
 
     print("=" * 100)
-
     start_http_server(8000)
     price_difference(top_5_count.keys())
 
